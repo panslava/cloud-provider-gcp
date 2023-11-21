@@ -89,7 +89,7 @@ func registerTargetPoolAddInstanceHook(gce *Cloud, callback func(*compute.Target
 		return fmt.Errorf("couldn't cast cloud to mockGCE: %#v", gce)
 	}
 	existingHandler := mockGCE.MockTargetPools.AddInstanceHook
-	hook := func(ctx context.Context, key *meta.Key, req *compute.TargetPoolsAddInstanceRequest, m *cloud.MockTargetPools) error {
+	hook := func(ctx context.Context, key *meta.Key, req *compute.TargetPoolsAddInstanceRequest, m *cloud.MockTargetPools, options ...cloud.Option) error {
 		callback(req)
 		return existingHandler(ctx, key, req, m)
 	}
@@ -103,7 +103,7 @@ func registerTargetPoolRemoveInstanceHook(gce *Cloud, callback func(*compute.Tar
 		return fmt.Errorf("couldn't cast cloud to mockGCE: %#v", gce)
 	}
 	existingHandler := mockGCE.MockTargetPools.RemoveInstanceHook
-	hook := func(ctx context.Context, key *meta.Key, req *compute.TargetPoolsRemoveInstanceRequest, m *cloud.MockTargetPools) error {
+	hook := func(ctx context.Context, key *meta.Key, req *compute.TargetPoolsRemoveInstanceRequest, m *cloud.MockTargetPools, options ...cloud.Option) error {
 		callback(req)
 		return existingHandler(ctx, key, req, m)
 	}
@@ -368,7 +368,7 @@ func removeFinalizer(service *v1.Service, kubeClient v1core.CoreV1Interface, key
 	return err
 }
 
-//hasFinalizer returns if the given service has the specified key in its list of finalizers.
+// hasFinalizer returns if the given service has the specified key in its list of finalizers.
 func hasFinalizer(service *v1.Service, key string) bool {
 	for _, finalizer := range service.ObjectMeta.Finalizers {
 		if finalizer == key {
